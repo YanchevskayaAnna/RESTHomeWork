@@ -1,6 +1,8 @@
 package com.epam.producing.testProject.configuration;
 
+import com.epam.producing.testProject.model.Address;
 import com.epam.producing.testProject.model.Employee;
+import com.epam.producing.testProject.repository.AddressRepository;
 import com.epam.producing.testProject.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,10 +18,15 @@ public class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
     @Bean
-    CommandLineRunner initDatabase(EmployeeRepository repository) {
+    CommandLineRunner initDatabase(EmployeeRepository employeeRepository, AddressRepository addressRepository) {
         return args -> {
-            log.info("Preloading " + repository.save(new Employee("Bilbo Baggins", "burglar")));
-            log.info("Preloading " + repository.save(new Employee("Frodo Baggins", "thief")));
+            Employee burglar = new Employee("Bilbo Baggins", "burglar");
+            Employee thief = new Employee("Frodo Baggins", "thief");
+            log.info("Preloading " + employeeRepository.save(burglar));
+            log.info("Preloading " + employeeRepository.save(thief));
+            log.info("Preloading " + addressRepository.save(new Address("Kyev", "Vilyamsa", employeeRepository.getOne((long) 1))));
+            log.info("Preloading " + addressRepository.save(new Address("Varshava", "Pravdu", employeeRepository.getOne((long) 1))));
+            log.info("Preloading " + addressRepository.save(new Address("New York", "5 avenue", employeeRepository.getOne((long) 2))));
         };
     }
 }
